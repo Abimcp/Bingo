@@ -7,8 +7,8 @@
   border: 2px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  width: 11vw;
-  height: 11vw;
+  width: 16vw;
+  height: 16vw;
   cursor: pointer;
 }
 
@@ -19,7 +19,7 @@
 
 .card p {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.2rem;
   line-height: 1.5;
   text-align: center;
 }
@@ -30,8 +30,8 @@
     flex-direction: column;
   }
   .card {
-    width: 15vw;
-    height: 15vh;
+    width: 25vw;
+    height: 25vh;
   }
 }
 
@@ -41,8 +41,11 @@
     flex-direction: column;
   }
   .card {
-    width: 17vw;
-    height: 17vh;
+    width: 20vw;
+    height: 20vh;
+  }
+  .card p {
+    font-size: 1.25rem;
   }
 }
 @media (max-width: 1077px) {

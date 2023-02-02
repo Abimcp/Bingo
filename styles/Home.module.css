@@ -37,7 +37,7 @@
 }
 
 .title {
-  margin: 0;
+  padding: 20px;
   line-height: 1.15;
   font-size: 4rem;
 }
@@ -70,10 +70,6 @@
   grid-row-gap: 0px;
 }
 
-.logo {
-  height: 1em;
-  margin-left: 0.5rem;
-}
 @media (max-width: 600px) {
   .grid {
     width: 100%;
