@@ -4,25 +4,94 @@ import Card from "../components/card";
 import styles from "../styles/Home.module.css";
 import { BingoData } from "../data";
 
-function shuffleArray(array) {
+function shuffleCards(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 }
-export default function Home() {
-  const [shuffledData, setShuffledData] = useState();
-  //const shuffledData = useMemo(() => shuffleArray(BingoData), [BingoData]);
-  // let shuffledData;
 
+export default function Home() {
+  const [shuffledCards, setShuffledCards] = useState([]);
+  const [clickedCards, setClickedCards] = useState([]);
+  const [hasLine, setHasLine] = useState(false);
   useEffect(() => {
-    const tempData = shuffleArray(BingoData);
-    const coorData = tempData.map((tempValue, index) => {
-      return { coords: index, ...tempValue };
-    });
-    setShuffledData(coorData);
+    setShuffledCards(shuffleCards(BingoData));
   }, []);
+  useEffect(() => {
+    if (!hasLine) checkBingo();
+    checkFullHouse();
+  }, [clickedCards]);
+
+  const bingoCards = shuffledCards.slice(0, 25);
+  const bingoBoard = [];
+  for (let i = 0; i < 5; i++) {
+    bingoBoard.push(bingoCards.slice(i * 5, (i + 1) * 5));
+  }
+
+  const handleClick = (card) => {
+    if (!clickedCards.includes(card)) {
+      setClickedCards([...clickedCards, card]);
+    }
+  };
+
+  const checkBingo = () => {
+    let hasBingo = false;
+
+    if (clickedCards.length === 0) return false;
+
+    // Check for a line
+    for (let i = 0; i < 5; i++) {
+      const row = bingoBoard[i];
+      const rowBingo = row.every((card) => clickedCards.includes(card));
+      if (rowBingo) {
+        hasBingo = true;
+        break;
+      }
+    }
+
+    // Check for a column
+    for (let i = 0; i < 5; i++) {
+      let columnBingo = true;
+      for (let j = 0; j < 5; j++) {
+        if (!clickedCards.includes(bingoBoard[j][i])) {
+          columnBingo = false;
+          break;
+        }
+      }
+      if (columnBingo) {
+        hasBingo = true;
+        break;
+      }
+    }
+
+    // Check for a diagonal
+    let diagonalBingo1 = true;
+    let diagonalBingo2 = true;
+    for (let i = 0; i < 5; i++) {
+      if (!clickedCards.includes(bingoBoard[i][i])) {
+        diagonalBingo1 = false;
+      }
+      if (!clickedCards.includes(bingoBoard[i][4 - i])) {
+        diagonalBingo2 = false;
+      }
+    }
+    if (diagonalBingo1 || diagonalBingo2) {
+      hasBingo = true;
+    }
+    if (hasBingo) {
+      setHasLine(true);
+      alert("Bingo!");
+    }
+  };
+
+  // Check for full house
+  const checkFullHouse = () => {
+    if (clickedCards.length === 25) {
+      alert("Bingo!");
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -36,10 +105,17 @@ export default function Home() {
         <h1 className={styles.title}>Stand-Up Bingo</h1>
 
         <div className={styles.grid}>
-          {shuffledData &&
-            shuffledData.map((cardData) => {
-              return <Card text={cardData.text}></Card>;
-            })}
+          {bingoBoard.map((row, index) => (
+            <div key={index}>
+              {row.map((card) => (
+                <Card
+                  key={card.id}
+                  text={card.text}
+                  onClick={() => handleClick(card)}
+                ></Card>
+              ))}
+            </div>
+          ))}
         </div>
       </main>
 
